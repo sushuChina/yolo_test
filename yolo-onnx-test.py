@@ -83,14 +83,27 @@ def draw_box(boxes, img_origin_resize,class_map_dict):
         cv2.putText(img_origin_resize, text, (start_point[0], start_point[1] - 10), cv2.FONT_HERSHEY_SIMPLEX,0.5,(255, 255, 255), 2)
     return img_origin_resize
 
+def pad_to_square(img):
+    image_shape = np.shape(img)
+    if image_shape[0] == image_shape[1]:
+        return img
+    shape_max = np.max(image_shape)
+    pad_col_left = int((shape_max-image_shape[0])/2)
+    pad_col_right = shape_max-pad_col_left-image_shape[0]
+    pad_row_left = int((shape_max-image_shape[1])/2)
+    pad_row_right = shape_max-pad_row_left-image_shape[1]
+    img_square = np.pad(img,((pad_col_left,pad_col_right),(pad_row_left,pad_row_right),(0,0)))
+    return img_square
+
 if __name__ == '__main__':
     
     import ast
     #%% 读取图像及前处理
-    image_name = 'bus'
+    image_name = '000000000036'
     img_origin = cv2.imread('./pic/'+image_name+'.jpg')
-    img_origin_resize = cv2.resize(img_origin, (640,640))
-    img_CHW = np.transpose(img_origin,(2,0,1))
+    image_square = pad_to_square(img_origin)
+    img_origin_resize = cv2.resize(image_square, (640,640))
+    img_CHW = np.transpose(img_origin_resize,(2,0,1))
     img_NCHW = np.expand_dims(img_CHW, axis=0).astype(np.float32)
     # 前处理--归一化　此处应与训练中的前处理相同
     img_NCHW_nor = img_NCHW/255
@@ -142,5 +155,5 @@ if __name__ == '__main__':
     A_post_result = NMS(boxes, iou_thres, box_area_thres)
     
     #%% 图像后处理及存图
-    draw_box(A_post_result,img_origin,class_map_dict)
-    cv2.imwrite('./result/result_'+image_name+'.jpg', img_origin)
+    draw_box(A_post_result,img_origin_resize,class_map_dict)
+    cv2.imwrite('./result/result_'+image_name+'.jpg', img_origin_resize)
