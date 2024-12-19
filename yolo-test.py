@@ -11,10 +11,10 @@ from ultralytics import YOLO
 
 
 # Load a pretrained YOLO11n model
-model = YOLO("yolo11n.onnx")
+model = YOLO("./model/yolo11n.onnx")
 
 # Define path to the image file
-source = "bus.jpg"
+source = "./pic/bus.jpg"
 
 
 # Run inference on the source
