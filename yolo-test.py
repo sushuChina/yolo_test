@@ -11,7 +11,7 @@ from ultralytics import YOLO
 
 
 # Load a pretrained YOLO11n model
-model = YOLO("./model/yolo11n.onnx")
+model = YOLO("./model/best.pt")
 
 # Define path to the image file
 source = "./pic/bus.jpg"
@@ -36,5 +36,5 @@ for i, r in enumerate(results):
     # Save results to disk
     r.save(filename=f"results{i}.jpg")
     
-# # Export the model
-# model.export(format="onnx")
+# Export the model
+model.export(format="onnx")

@@ -37,6 +37,7 @@ def area_box(box):
     return (box[2] - box[0]) * (box[3] - box[1])
 
 def iou(box1, box2):
+    # 计算交并比
     left   = max(box1[0], box2[0])
     top    = max(box1[1], box2[1])
     right  = min(box1[2], box2[2])
@@ -48,6 +49,7 @@ def iou(box1, box2):
     return cross / union
 
 def NMS(boxes, iou_thres, box_area_thres):
+    #　非极大值抑制
     remove_flags = [False] * len(boxes)
     keep_boxes = []
     for i, ibox in enumerate(boxes):
@@ -84,6 +86,7 @@ def draw_box(boxes, img_origin_resize,class_map_dict):
     return img_origin_resize
 
 def pad_to_square(img):
+    # 将图像扩展为方形
     image_shape = np.shape(img)
     if image_shape[0] == image_shape[1]:
         return img
@@ -99,7 +102,7 @@ if __name__ == '__main__':
     
     import ast
     #%% 读取图像及前处理
-    image_name = '000000000036'
+    image_name = '000000000034'
     img_origin = cv2.imread('./pic/'+image_name+'.jpg')
     image_square = pad_to_square(img_origin)
     img_origin_resize = cv2.resize(image_square, (640,640))
@@ -110,7 +113,7 @@ if __name__ == '__main__':
     
     #%% 模型推理
     # 读取onnx模型转换为session
-    model_name = 'yolo11n'  
+    model_name = 'best'  
     model = onnx.load('./model/'+model_name+'.onnx')
     model_Session = onnxruntime.InferenceSession(model.SerializeToString())
     # 获取input_name，input_shape,out_put_name
